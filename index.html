@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carta Especial</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Georgia', serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ffd6e7, #c9f0ff);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .envelope {
+            position: absolute;
+            width: 300px;
+            height: 200px;
+            background-color: #f9f3f3;
+            border-radius: 5px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.5s ease;
+            z-index: 10;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .envelope-front {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #f9f3f3;
+            border: 2px solid #e6c9c9;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+            transition: opacity 0.5s ease;
+        }
+        
+        .envelope-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #f9f3f3;
+            border: 2px solid #e6c9c9;
+            border-radius: 5px;
+            display: none;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 20px;
+            z-index: 1;
+            overflow-y: auto;
+        }
+        
+        .envelope.open .envelope-front {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .envelope.open .envelope-back {
+            display: flex;
+        }
+        
+        .title {
+            font-size: 24px;
+            color: #d46a6a;
+            text-align: center;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hearts-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .heart {
+            font-size: 30px;
+            color: #ff6b6b;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .heart:hover {
+            transform: scale(1.2);
+        }
+        
+        .heart.popped {
+            animation: pop 0.5s forwards;
+        }
+        
+        @keyframes pop {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.7; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+        
+        .poem {
+            text-align: center;
+            line-height: 1.6;
+            color: #5a5a5a;
+            margin: 15px 0;
+            font-style: italic;
+            font-size: 15px;
+        }
+        
+        .carta-image {
+            max-width: 100%;
+            max-height: 150px;
+            margin: 10px auto;
+            display: block;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .message.show {
+            opacity: 1;
+        }
+        
+        .floating-hearts {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+        
+        .floating-heart {
+            position: absolute;
+            font-size: 24px;
+            color: #ff6b6b;
+            opacity: 0;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100px) rotate(20deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="envelope" id="envelope">
+            <div class="envelope-front">
+                <h1 class="title">PRESENTE PRA VOCÊ</h1>
+                <div class="hearts-container">
+                    <div class="heart" id="heart1">❤️</div>
+                    <div class="heart" id="heart2">❤️</div>
+                    <div class="heart" id="heart3">❤️</div>
+                </div>
+            </div>
+            <div class="envelope-back">
+                <h2 class="title">Uma Mensagem Especial</h2>
+                
+                <!-- Imagem personalizada -->
+                <img src="https://i.pinimg.com/originals/7d/3c/d6/7d3cd65da2182b47531a82c7391c97c0.jpg" 
+                     alt="Imagem especial" class="carta-image" id="customImage">
+                
+                <p class="poem" id="poem">
+                    Diante de ti, o mundo se aquieta,<br>
+                    Não por sussurros de paixão declarada,<br>
+                    Mas pela simples e pura quietude<br>
+                    Que a tua forma traz à paisagem.<br><br>
+                    
+                    A curva do teu sorriso é um arco<br>
+                    Que tensiona o ar ao teu redor,<br>
+                    Atrai olhares, suspiros, silêncios,<br>
+                    É uma força de gravidade suave e implacável.<br><br>
+                    
+                    O mundo gira, distraído e caótico,<br>
+                    Até que passes, e por um instante,<br>
+                    Tudo para. A beleza não é um conceito,<br>
+                    É o teu nome, dito em voz baixa pelo vento.
+                </p>
+            </div>
+        </div>
+        
+        <div class="floating-hearts" id="floatingHearts"></div>
+    </div>
+    
+    <div class="message" id="message">Clique em um coração!</div>
+
+    <script>
+        // Elementos DOM
+        const envelope = document.getElementById('envelope');
+        const hearts = [
+            document.getElementById('heart1'),
+            document.getElementById('heart2'),
+            document.getElementById('heart3')
+        ];
+        const message = document.getElementById('message');
+        const floatingHearts = document.getElementById('floatingHearts');
+        const customImage = document.getElementById('customImage');
+        
+        // Contador de cliques
+        let clickCount = 0;
+        
+        // Posições possíveis para a carta
+        const positions = [
+            { top: '20%', left: '10%' },
+            { top: '60%', left: '70%' },
+            { top: '30%', left: '80%' },
+            { top: '70%', left: '20%' },
+            { top: '10%', left: '50%' }
+        ];
+        
+        // Função para mostrar mensagem temporária
+        function showMessage(text) {
+            message.textContent = text;
+            message.classList.add('show');
+            setTimeout(() => {
+                message.classList.remove('show');
+            }, 2000);
+        }
+        
+        // Função para criar coração flutuante
+        function createFloatingHeart(x, y) {
+            const heart = document.createElement('div');
+            heart.classList.add('floating-heart');
+            heart.textContent = '❤️';
+            heart.style.left = x + 'px';
+            heart.style.top = y + 'px';
+            
+            floatingHearts.appendChild(heart);
+            
+            // Animação do coração
+            setTimeout(() => {
+                heart.style.animation = 'float 1.5s forwards';
+            }, 10);
+            
+            // Remover após a animação
+            setTimeout(() => {
+                heart.remove();
+            }, 1600);
+        }
+        
+        // Função para mover a carta
+        function moveEnvelope() {
+            const randomPos = positions[Math.floor(Math.random() * positions.length)];
+            envelope.style.top = randomPos.top;
+            envelope.style.left = randomPos.left;
+            envelope.style.position = 'absolute';
+            envelope.style.transform = `rotate(${Math.random() * 10 - 5}deg)`;
+        }
+        
+        // Função para centralizar a carta
+        function centerEnvelope() {
+            envelope.style.top = '50%';
+            envelope.style.left = '50%';
+            envelope.style.transform = 'translate(-50%, -50%)';
+        }
+        
+        // Evento de clique nos corações
+        hearts.forEach((heart, index) => {
+            heart.addEventListener('click', function() {
+                if (!this.classList.contains('popped')) {
+                    // Estourar o coração
+                    this.classList.add('popped');
+                    clickCount++;
+                    
+                    // Criar coração flutuante
+                    const rect = this.getBoundingClientRect();
+                    createFloatingHeart(rect.left + rect.width/2, rect.top + rect.height/2);
+                    
+                    // Mover a carta
+                    moveEnvelope();
+                    
+                    // Mostrar mensagem
+                    if (clickCount < 3) {
+                        showMessage(`Mais ${3 - clickCount} coração(s) para abrir a carta!`);
+                    } else if (clickCount === 3) {
+                        showMessage('Agora clique na carta para abrir!');
+                    }
+                }
+            });
+        });
+        
+        // Evento para abrir a carta no quarto clique
+        envelope.addEventListener('click', function(e) {
+            if (e.target.classList.contains('heart')) return; // Ignorar cliques nos corações
+            
+            if (clickCount >= 3 && !this.classList.contains('open')) {
+                this.classList.add('open');
+                showMessage('Carta aberta!');
+                
+                // Expande a carta para mostrar o conteúdo completo
+                this.style.width = '350px';
+                this.style.height = '500px';
+                this.style.transition = 'all 0.5s ease';
+                
+                // Centraliza a carta após expandir
+                setTimeout(() => {
+                    centerEnvelope();
+                }, 500);
+            } else if (clickCount < 3) {
+                showMessage(`Estoure todos os ${3 - clickCount} coração(s) primeiro!`);
+            }
+        });
+        
+        // Posicionar a carta inicialmente no centro
+        window.addEventListener('load', function() {
+            centerEnvelope();
+            showMessage('Clique nos corações para estourá-los!');
+        });
+    </script>
+</body>
+</html>
